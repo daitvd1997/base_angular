@@ -1,0 +1,92 @@
+<mat-card>
+    <mat-card-title>Viết gì đó</mat-card-title>
+</mat-card>
+<mat-divider></mat-divider>
+<mat-card-content>
+    <mat-card>
+        <mat-form-field>
+            <mat-label>Tìm theo seri</mat-label>
+            <input matInput placeholder="Ex. Pizza">
+            <mat-hint align="end">Min 5 character</mat-hint>
+        </mat-form-field>
+        <button mat-flat-button><i class="material-icons">search</i></button>
+    </mat-card>
+    <mat-divider></mat-divider>
+    <mat-table [dataSource]="listData" matSort>
+        <!-- cài đặt các row mat-sort-header cho phép người dùng sort -->
+        <ng-container matColumnDef="ID">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Mã Giao dịch</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PHONE" sticky>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Số nhận</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.phone}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="CONTENT" sticky>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nội dung</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.content}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PRICE" sticky>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Giá thành</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.money | currency:'VND'}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="NAME">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Người tạo</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.user.username}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="LAST_MONEY">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Số tiền còn lại</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.user.money | currency:'VND'}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="STATUS" sticky>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Trạng Thái</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.status == 0 ? 'Chưa chạy' : element.status == 1? 'Đang chạy' : element.status == 2 ? 'Đã gửi' : 'Thất bại'}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="CREATED_DATE">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Ngày tạo
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.createAt | date:'hh:mm:ss - dd/MM/yyyy'}}
+            </mat-cell>
+        </ng-container>
+        <!-- Hàng hiện các nút icon hành động -->
+        <ng-container matColumnDef="ACTIONS">
+            <mat-header-cell *matHeaderCellDef>Lệnh</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <mat-icon>launch</mat-icon>
+                Callback
+            </mat-cell>
+        </ng-container>
+        <!-- end hành động -->
+        <!-- cài đặt các header lấy từ biến displayedColumns -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <!-- end cài đặt biến -->
+
+        <!-- Hàng hiện trạng thái đang loading nếu loading xong sẽ biến mất -->
+        <ng-container matColumnDef="loading">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                Loading data...
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="noData">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                No data.
+            </mat-footer-cell>
+        </ng-container>
+        <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':listData!=null}">
+        </mat-footer-row>
+        <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(listData!=null && listData.data.length==0)}">
+        </mat-footer-row>
+        <!-- end loading -->
+    </mat-table>
+    <!-- hiện paging trang -->
+    <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageOption" showFirstLastButtons
+        (page)="getServerData($event)">
+    </mat-paginator>
+    <!-- kết thúc page -->
+    <!-- </div> -->
+</mat-card-content>
+<!-- Dashboard Counts Section-->
